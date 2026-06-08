@@ -1,8 +1,9 @@
-import { Resend } from "resend";
+const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
+  // Only allow secure POST data transfers
   if (req.method !== "POST") {
     return res
       .status(405)
@@ -11,6 +12,7 @@ export default async function handler(req, res) {
 
   const { name, email, message } = req.body || {};
 
+  // Server-side validation check
   if (!name || !email || !message) {
     return res
       .status(400)
@@ -23,19 +25,21 @@ export default async function handler(req, res) {
       to: "hello@redetafrica.com",
       subject: `Website enquiry from ${name}`,
       html: `
-        <h2>New website enquiry</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${String(message).replace(/\n/g, "<br>")}</p>
+        <div style="font-family: sans-serif; padding: 20px; color: #333; line-height: 1.5;">
+          <h2 style="color: #0a0c10; border-bottom: 1px solid #eee; padding-bottom: 10px;">New Website Enquiry</h2>
+          <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
+          <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
+          <p style="margin: 20px 0 5px 0;"><strong>Message:</strong></p>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; white-space: pre-wrap;">${String(message)}</div>
+        </div>
       `,
     });
 
     return res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Resend error:", error);
+    console.error("Resend error execution tracking:", error);
     return res
       .status(500)
-      .json({ success: false, message: "Failed to send email" });
+      .json({ success: false, message: "Failed to securely transmit email" });
   }
-}
+};

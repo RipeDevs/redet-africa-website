@@ -33,7 +33,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── Noise texture overlay ── */
+/* Noise overlay texture */
 body::before {
   content: "";
   position: fixed;
@@ -43,7 +43,7 @@ body::before {
   z-index: 999;
 }
 
-/* ── Grid lines ── */
+/* Background grid framework lines */
 body::after {
   content: "";
   position: fixed;
@@ -56,7 +56,7 @@ body::after {
   z-index: 0;
 }
 
-/* ── Nav ── */
+/* Navigation Framework Layout */
 nav {
   position: fixed;
   top: 0;
@@ -138,7 +138,7 @@ nav {
     d 0.25s ease;
 }
 
-/* ── Hero ── */
+/* Hero Section */
 section {
   position: relative;
   z-index: 1;
@@ -256,7 +256,7 @@ h1 em {
   color: var(--white);
 }
 
-/* ── Section base ── */
+/* Layout Structural Blocks */
 .section {
   padding: 96px 40px;
   max-width: 1100px;
@@ -292,14 +292,13 @@ h2 {
   margin-bottom: 20px;
 }
 
-/* ── Divider ── */
 .divider {
   border: none;
   border-top: 1px solid var(--border);
   margin: 0 40px;
 }
 
-/* ── About ── */
+/* About Grid layout */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -367,7 +366,7 @@ h2 {
   letter-spacing: 0.5px;
 }
 
-/* ── Products ── */
+/* Products Grid Cards Layout */
 .products-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -484,7 +483,7 @@ h2 {
   transform: translateX(3px);
 }
 
-/* ── Contact ── */
+/* Contact Block Layout */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr 1.4fr;
@@ -537,11 +536,10 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  shrink: 0;
   flex-shrink: 0;
 }
 
-/* ── Form ── */
+/* Contact Interactive Form Styling */
 form {
   display: flex;
   flex-direction: column;
@@ -586,6 +584,7 @@ input::placeholder,
 textarea::placeholder {
   color: var(--muted);
 }
+
 input:focus,
 textarea:focus {
   border-color: rgba(201, 168, 76, 0.5);
@@ -616,7 +615,7 @@ textarea {
   color: #ef4444;
 }
 
-/* ── Footer ── */
+/* Footer structure */
 footer {
   position: relative;
   z-index: 1;
@@ -655,7 +654,7 @@ footer {
   color: var(--gold);
 }
 
-/* ── Animations ── */
+/* Core Animations Layout rules */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -677,7 +676,6 @@ footer {
   }
 }
 
-/* REVEAL TRANSITION */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -692,7 +690,7 @@ footer {
   transform: translateY(0);
 }
 
-/* ── Mobile ── */
+/* Responsive Media Queries Configuration rules */
 @media (max-width: 768px) {
   nav {
     padding: 16px 20px;
