@@ -2,7 +2,9 @@
 const nav = document.querySelector("nav");
 
 function updateNav() {
-  nav.classList.toggle("scrolled", window.scrollY > 40);
+  if (nav) {
+    nav.classList.toggle("scrolled", window.scrollY > 40);
+  }
 }
 
 window.addEventListener("scroll", updateNav, { passive: true });
@@ -11,35 +13,38 @@ updateNav();
 // ── Mobile Navigation Toggle ──────────────────────────────────────────
 const toggle = document.getElementById("nav-toggle");
 const links = document.getElementById("nav-links");
-const topLines = toggle.querySelector(".line-top");
-const midLines = toggle.querySelector(".line-mid");
-const botLines = toggle.querySelector(".line-bot");
-let open = false;
 
-function toggleMenu(state) {
-  open = state !== undefined ? state : !open;
+if (toggle && links) {
+  const topLines = toggle.querySelector(".line-top");
+  const midLines = toggle.querySelector(".line-mid");
+  const botLines = toggle.querySelector(".line-bot");
+  let open = false;
 
-  links.classList.toggle("open", open);
-  toggle.setAttribute("aria-expanded", open);
+  function toggleMenu(state) {
+    open = state !== undefined ? state : !open;
 
-  // Morph paths smoothly between Hamburger menu bars and Close X configs
-  if (open) {
-    topLines.setAttribute("d", "M6 18L18 6M6 6l12 12");
-    midLines.style.opacity = "0";
-    botLines.setAttribute("d", "M6 18L18 6M6 6l12 12");
-  } else {
-    topLines.setAttribute("d", "M4 6h16");
-    midLines.style.opacity = "1";
-    botLines.setAttribute("d", "M4 18h16");
+    links.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", open);
+
+    // Morph paths smoothly between Hamburger menu bars and Close X configs
+    if (open) {
+      if (topLines) topLines.setAttribute("d", "M6 18L18 6M6 6l12 12");
+      if (midLines) midLines.style.opacity = "0";
+      if (botLines) botLines.setAttribute("d", "M6 18L18 6M6 6l12 12");
+    } else {
+      if (topLines) topLines.setAttribute("d", "M4 6h16");
+      if (midLines) midLines.style.opacity = "1";
+      if (botLines) botLines.setAttribute("d", "M4 18h16");
+    }
   }
+
+  toggle.addEventListener("click", () => toggleMenu());
+
+  // Close layout drawer whenever a section shortcut link is clicked
+  links.querySelectorAll("a").forEach((a) => {
+    a.addEventListener("click", () => toggleMenu(false));
+  });
 }
-
-toggle.addEventListener("click", () => toggleMenu());
-
-// Close layout drawer whenever a section shortcut link is clicked
-links.querySelectorAll("a").forEach((a) => {
-  a.addEventListener("click", () => toggleMenu(false));
-});
 
 // ── Intersection Scroll Reveal ────────────────────────────────────────
 const revealSections = document.querySelectorAll(".reveal");
@@ -66,69 +71,77 @@ if ("IntersectionObserver" in window) {
   revealSections.forEach((el) => el.classList.add("visible"));
 }
 
-// ── Production Contact Form Handler ────────────────────────────────────
-const form = document.getElementById("contact-form");
-const status = document.getElementById("form-status");
-const btn = document.getElementById("form-btn");
+// ── Web3Forms Advanced Inline Contact Form Handler ───────────────────────
+const form = document.querySelector("#contact form");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  status.className = "form-status";
-  status.textContent = "";
-
-  const name = form.name.value.trim();
-  const email = form.email.value.trim().toLowerCase();
-  const message = form.message.value.trim();
-
-  // Client-side validations
-  if (!name || !email || !message) {
-    status.className = "form-status error";
-    status.textContent = "Please fill in all fields.";
-    return;
+if (form) {
+  // Create an inline status message block dynamically if it doesn't exist
+  let status = document.getElementById("form-status");
+  if (!status) {
+    status = document.createElement("div");
+    status.id = "form-status";
+    status.style.marginTop = "15px";
+    status.style.padding = "10px";
+    status.style.borderRadius = "4px";
+    status.style.fontSize = "14px";
+    status.style.display = "none";
+    form.appendChild(status);
   }
 
-  const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRe.test(email)) {
-    status.className = "form-status error";
-    status.textContent = "Please enter a valid email address.";
-    return;
-  }
+  const btn = form.querySelector('button[type="submit"]');
 
-  // Visual submission lock state
-  btn.textContent = "Sending...";
-  btn.disabled = true;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault(); // Stop page from hard reloading
 
-  try {
-    // Send data securely to your Vercel Node serverless environment
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, message }),
-    });
+    // Read values safely on submission event trigger
+    const name = form.name.value.trim();
+    const email = form.email.value.trim().toLowerCase();
+    const message = form.message.value.trim();
 
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      status.className = "form-status success";
-      status.textContent = "Message sent. We will be in touch.";
-      form.reset();
-    } else {
-      throw new Error(data.message || "Endpoint rejected delivery packet");
+    if (!name || !email || !message) {
+      status.style.display = "block";
+      status.style.background = "rgba(239, 68, 68, 0.1)";
+      status.style.color = "#ef4444";
+      status.textContent = "Please fill out all fields.";
+      return;
     }
-  } catch (error) {
-    console.error(
-      "Vercel route communication error. Fallback triggered:",
-      error,
-    );
 
-    // Backup: directly trigger local email clients if connection to backend is broken
-    const mailto = `mailto:hello@redetafrica.com?subject=${encodeURIComponent("Enquiry from " + name)}&body=${encodeURIComponent("Name: " + name + "\nEmail: " + email + "\n\n" + message)}`;
-    window.location.href = mailto;
-  } finally {
-    // Revert button layout states
-    btn.innerHTML = `Send Message <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>`;
-    btn.disabled = false;
-  }
-});
+    // Set interactive visual sending state
+    const originalBtnText = btn.innerHTML;
+    btn.textContent = "Sending...";
+    btn.disabled = true;
+    status.style.display = "none";
+
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        status.style.display = "block";
+        status.style.background = "rgba(34, 197, 94, 0.1)";
+        status.style.color = "#22c55e";
+        status.textContent = "Message sent successfully! We will be in touch.";
+        form.reset();
+      } else {
+        throw new Error(data.message || "Form submission rejected.");
+      }
+    } catch (error) {
+      console.error("Submission Error:", error);
+      status.style.display = "block";
+      status.style.background = "rgba(239, 68, 68, 0.1)";
+      status.style.color = "#ef4444";
+      status.textContent =
+        "Something went wrong. Please try again or email us directly.";
+    } finally {
+      // Restore button status control variables
+      btn.innerHTML = originalBtnText;
+      btn.disabled = false;
+    }
+  });
+}
