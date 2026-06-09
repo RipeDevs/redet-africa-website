@@ -1,3 +1,13 @@
+// ── Nav scroll detection ─────────────────────────────────────────────
+const nav = document.querySelector("nav");
+
+function updateNav() {
+  nav.classList.toggle("scrolled", window.scrollY > 40);
+}
+
+window.addEventListener("scroll", updateNav, { passive: true });
+updateNav();
+
 // ── Mobile Navigation Toggle ──────────────────────────────────────────
 const toggle = document.getElementById("nav-toggle");
 const links = document.getElementById("nav-links");

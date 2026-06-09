@@ -1,3 +1,13 @@
+// Prevent XSS in email HTML template
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -27,10 +37,10 @@ module.exports = async function handler(req, res) {
       html: `
         <div style="font-family: sans-serif; padding: 20px; color: #333; line-height: 1.5;">
           <h2 style="color: #0a0c10; border-bottom: 1px solid #eee; padding-bottom: 10px;">New Website Enquiry</h2>
-          <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
-          <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
+          <p style="margin: 10px 0;"><strong>Name:</strong> ${escapeHtml(name)}</p>
+          <p style="margin: 10px 0;"><strong>Email:</strong> ${escapeHtml(email)}</p>
           <p style="margin: 20px 0 5px 0;"><strong>Message:</strong></p>
-          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; white-space: pre-wrap;">${String(message)}</div>
+          <div style="background: #f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #eee; white-space: pre-wrap;">${escapeHtml(message)}</div>
         </div>
       `,
     });
