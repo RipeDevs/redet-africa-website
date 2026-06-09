@@ -167,21 +167,17 @@ section {
 } */
 
 .hero {
-  /* Linear gradient adds a subtle fade so the text pops perfectly */
   background:
-    linear-gradient(rgba(10, 12, 16, 0.65), rgba(10, 12, 16, 0.8)),
+    linear-gradient(rgba(10, 12, 16, 0.8), rgba(10, 12, 16, 0.8)),
     url("../img/hero.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 120px 40px 80px;
-
-  max-width: 100%; /* Changed from 900px so the background image stretches full-width */
   width: 100%;
 }
 
